@@ -92,7 +92,7 @@ float[][] translationMatrix( float x , float y , float z) {
 		);
 }
 
-float matrixProduct(float[][] a, float[] b) {
+float[] matrixProduct(float[][] a, float[] b) {
 	int m = a.length;
 	int n = b.length
 
@@ -109,7 +109,14 @@ float matrixProduct(float[][] a, float[] b) {
 	return result;
 
 My3DBox transformBox(My3DBox box, float[][] transformMatrix) {
+    float[] b = {box.x, box.y, box.z, 1};
+    float[] result = matrixProduct(transformMatrix, b);
+    return new My3DPoint(b[0], b[1], b[2]);
+}
 
+My3DPoint euclidean3DPoint (float[] a) {
+    My3DPoint result = new My3DPoint(a[0]/a[3], a[1]/a[3], a[2]/a[3]);
+    return result;
 }
 
 
