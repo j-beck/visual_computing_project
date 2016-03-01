@@ -49,47 +49,50 @@ float[] homgeneous3DPoint(My3DPoint p) {
   return result;
 }
 
-float[][] rotateXMatrix( float angle ) { 
+float[][] rotateXMatrix( float angle ) {
 	return ( new float[][] {
-		{ 1 , 0 , 0 , 0 }, 
-		{ 0 , cos( angle ), -sin( angle ) , 0 }, 
-		{ 0 , sin( angle ) , cos( angle ) , 0 }, 
+		{ 1 , 0 , 0 , 0 },
+		{ 0 , cos( angle ), -sin( angle ) , 0 },
+		{ 0 , sin( angle ) , cos( angle ) , 0 },
 		{ 0 , 0 , 0 , 1 }}
 		);
 }
-float[][] rotateYMatrix( float angle ) { 
+float[][] rotateYMatrix( float angle ) {
 	return ( new float[][] {
-		{ cos( angle ), 0,  sin( angle ) , 0 }, 
-		{ 0 , 1 , 0 , 0 }, 
-		{ -sin( angle ), 0 , cos( angle ) , 0 }, 
+		{ cos( angle ), 0,  sin( angle ) , 0 },
+		{ 0 , 1 , 0 , 0 },
+		{ -sin( angle ), 0 , cos( angle ) , 0 },
 		{ 0 , 0 , 0 , 1 }}
 		);
 }
-float[][] rotateZMatrix( float angle ) { 
+float[][] rotateZMatrix( float angle ) {
 	return ( new float[][] {
-		{ cos( angle ), - sin( angle ) , 0 , 0}, 
-		{ sin( angle ) , cos( angle ) , 0 , 0}, 
-		{ 0 , 0 , 1 , 0 }, 
-		{ 0 , 0 , 0 , 1 }}
-		);
-}
-
-float[][] scaleMatrix( float x , float y , float z) { 
-	return ( new float[][] {
-		{ x , 0 , 0 , 0 }, 
-		{ 0 , y , 0 , 0 }, 
-		{ 0 , 0 , z , 0 }, 
+		{ cos( angle ), - sin( angle ) , 0 , 0},
+		{ sin( angle ) , cos( angle ) , 0 , 0},
+		{ 0 , 0 , 1 , 0 },
 		{ 0 , 0 , 0 , 1 }}
 		);
 }
 
-float[][] translationMatrix( float x , float y , float z) { 
+float[][] scaleMatrix( float x , float y , float z) {
 	return ( new float[][] {
-		{ 1 , 0 , 0 , x }, 
-		{ 0 , 1 , 0 , y }, 
-		{ 0 , 0 , 1 , z }, 
+		{ x , 0 , 0 , 0 },
+		{ 0 , y , 0 , 0 },
+		{ 0 , 0 , z , 0 },
 		{ 0 , 0 , 0 , 1 }}
 		);
+}
+
+float[][] translationMatrix( float x , float y , float z) {
+	return ( new float[][] {
+		{ 1 , 0 , 0 , x },
+		{ 0 , 1 , 0 , y },
+		{ 0 , 0 , 1 , z },
+		{ 0 , 0 , 0 , 1 }}
+		);
+}
+
+My3DBox transformBox(My3DBox box, float[][] transformMatrix) {
 }
 
 
