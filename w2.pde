@@ -92,6 +92,23 @@ float[][] translationMatrix( float x , float y , float z) {
 		);
 }
 
+float matrixProduct(float[][] a, float[] b) {
+	int m = a.length;
+	int n = b.length
+	
+	if(n == 0 || m == 0){
+		throw new Exception("Empty matrix is not allowed");
+	if(a[0].length != n)
+		throw new Exception("Not possible to multiply.");
+	float result = 0.0;
+	for(int i = 0; i < m; ++i) {
+		for(int j = 0; j< n ; ++j){
+			result += a[i][j] * b[j]
+		}
+	}
+	return result;
+}
+
 
 /**
   *      Classes
