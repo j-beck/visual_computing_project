@@ -11,20 +11,36 @@ My2DPoint p8 = new My2DPoint(250,75);
 My2DPoint[] s = {p1, p2, p3, p4, p5, p6, p7, p8};
 My2DBox box = new My2DBox(s);
 */
+void settings() { 
+	size ( 1000 , 1000 , P2D );
+} 
 
-void settings() {
-  size(400, 400, P2D);
-}
+void setup() { } 
 
-void setup() {
-}
-
-void draw() {
-  My3DPoint eye = new My3DPoint(-100, -100, -5000);
-  My3DPoint origin = new My3DPoint(50, 50, 50);
-  My3DBox input3DBox = new My3DBox(origin, 100, 150, 300);
-  projectBox(eye, input3DBox).render();
-}
+void draw() { 
+	background ( 255 , 255 , 255 );
+	My3DPoint eye = new My3DPoint ( 0 , 0 , - 5000 );
+	My3DPoint origin = new My3DPoint ( 0 , 0 , 0 );
+	
+input3DBox = new My3DBox ( origin , 100 , 150 , 300 );
+	//rotated around x 
+float [][] transform1 = rotateXMatrix ( PI / 8 );
+	input3DBox = 
+transformBox ( input3DBox , transform1 );
+	projectBox ( eye , 
+input3DBox ). render ();
+	//rotated and translated float [][] 
+transform2 = translationMatrix ( 200 , 200 , 0 );
+	input3DBox = 
+transformBox ( input3DBox , transform2 );
+	projectBox ( eye , 
+input3DBox ). render ();
+	//rotated, translated, and scaled 
+float [][] transform3 = scaleMatrix ( 2 , 2 , 2 );
+	input3DBox = 
+transformBox ( input3DBox , transform3 );
+	projectBox ( eye , 
+input3DBox ). render (); }
 
 /**
   *      Methods
@@ -92,7 +108,7 @@ float[][] translationMatrix( float x , float y , float z) {
 		);
 }
 
-float matrixProduct(float[][] a, float[] b) {
+float[] matrixProduct(float[][] a, float[] b) {
 	int m = a.length;
 	int n = b.length
 	
@@ -100,10 +116,10 @@ float matrixProduct(float[][] a, float[] b) {
 		throw new Exception("Empty matrix is not allowed");
 	if(a[0].length != n)
 		throw new Exception("Not possible to multiply.");
-	float result = 0.0;
+	float[] result = new float[n];
 	for(int i = 0; i < m; ++i) {
 		for(int j = 0; j< n ; ++j){
-			result += a[i][j] * b[j]
+			result[i] += a[i][j] * b[j]
 		}
 	}
 	return result;
