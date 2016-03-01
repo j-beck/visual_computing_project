@@ -12,7 +12,7 @@ void draw() {
   My3DBox input3DBox = new My3DBox(origin, 100, 150, 300);
   
   // rotated around x
-  float[][] transform1 = rotateXMatrix(PI/8);
+  float[][] transform1 = rotateXMatrix(-PI/8);
   input3DBox = transformBox(input3DBox, transform1);
   projectBox(eye, input3DBox).render();
   
@@ -32,8 +32,12 @@ void draw() {
 **/
 
 My2DPoint projectPoint(My3DPoint eye, My3DPoint p) {
+  /*
   float px = p.x + p.z * (eye.x/eye.z);
   float py = p.y + p.z * (eye.y/eye.z);
+  */
+  float px = (p.x - eye.x) / (1 - (p.z/eye.z));
+  float py = (p.y - eye.y) / (1 - (p.z/eye.z));
   return new My2DPoint(px, py);
 }
 
