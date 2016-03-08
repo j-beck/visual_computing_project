@@ -39,3 +39,42 @@ void mouseWheel(MouseEvent event) {
   sensitivity = max(1, sensitivity);
   System.out.println(sensitivity);
 }
+
+class Plate {
+	private final float maxAngle = PI/3;
+	private final float maxSensitivity = 50;
+	private float xAngle = 0f;
+	private float zAngle = 0f;
+	private float sensitivity = 10;
+	private final int x,y,z,height,width,depth;
+	
+	Plate(int x, int y, int z, int height, int width, int depth){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.height = height;
+		this.width = width;
+		this.depth = depth;
+	}
+	
+	public void draw() {
+		translate(x,y,z);
+		rotateX(xAngle);
+		rotateZ(zAngle);
+		box(height, width, depth);
+	}
+	
+	public void changeSensitivity(MouseEvent event) {
+		float e = event.getCount();
+		sensitivity = min( sensitivity + e, maxSensitivity);
+		sensitivity = max(1, sensitivity);
+	}
+	
+	public void updateAngle() {
+		xAngle += -(mouseY - pmouseY)*PI*sensitivity/pow(10,4);
+		zAngle += (mouseX - pmouseX)*PI*sensitivity/pow(10,4);
+
+		xAngle = max (min(xAngle, maxAngle), -maxAngle);
+		zAngle = max (min(zAngle, maxAngle), -maxAngle);
+	}
+}
