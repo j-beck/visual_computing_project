@@ -6,8 +6,8 @@ class PlateAndBall {
 
 	private final float gravityConstant = 0.0981;
 	private final float normalForce = 1.0;
-	private final float mu = 0.05;
-	private final float frictionMagnitude = normalForce * mu;
+	private final float mu = 0.30;
+	private float frictionMagnitude = normalForce * mu;
 
 
   private float xAngle = 0f;
@@ -71,6 +71,8 @@ class PlateAndBall {
 	private void updateSphere() {
 		gravityForce.x = sin(zAngle) * gravityConstant;
 		gravityForce.z = - sin(xAngle) * gravityConstant;
+
+		frictionMagnitude = mu * cos(zAngle) * cos(xAngle) * gravityConstant;
 
 		frictionForce = velocity.get();
 		frictionForce.mult(-1);
