@@ -3,7 +3,6 @@ abstract class Mover extends Object3D{
     
   PVector velocity;
   
-  
   public Mover(float x, float y, float z){
     super(x,y,z);
     velocity = new PVector(0,0,0);

@@ -51,5 +51,6 @@ class Plate extends Object3D{
 
     xAngle = max (min(xAngle, maxAngle), -maxAngle);
     zAngle = max (min(zAngle, maxAngle), -maxAngle);
+    
   }
 }
