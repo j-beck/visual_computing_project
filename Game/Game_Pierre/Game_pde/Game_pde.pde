@@ -67,6 +67,7 @@ void draw() {
 			break;
 		case EDITING:
 			plate.drawTOP();
+                  ball.drawTOP();
 			for (CylinderOnPlate c : cylinders) {
 				c.drawTOP();
 			}

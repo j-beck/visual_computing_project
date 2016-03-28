@@ -130,6 +130,13 @@ class BallOnPlate {
 		popMatrix();
 	}
 
-
+  public void drawTOP() {
+    pushMatrix();
+    plate.translateToPlateCoordinates();
+    translate(this.location.x,this.location.z,plate.getWidth());
+    rotateX(PI/2.);
+    sphere(radius);
+    popMatrix();
+  }
 
 }
