@@ -1,3 +1,8 @@
 # visual_computing_project
-pthevenet
-thomasavon
+
+
+
+## Authors
+  xxxxxx Johannes Beck
+  xxxxxx Thomas Avon
+  246645 Pierre Thévenet
