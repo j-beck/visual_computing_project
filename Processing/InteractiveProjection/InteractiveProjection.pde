@@ -1,4 +1,9 @@
 
+
+final int cubeWidth = 150;
+final int cubeHeight = 150;
+final int cubeDepth = 150;
+
 void settings() {
 	size ( 1000 , 1000 , P2D );
 }
@@ -9,12 +14,8 @@ void draw() {
   background(255, 255, 255);
   My3DPoint eye = new My3DPoint(0, 0, -5000);
   My3DPoint origin = new My3DPoint(0, 0, 0);
-  My3DBox input3DBox = new My3DBox(origin, 100, 150, 300);
+  My3DBox input3DBox = new My3DBox(origin, cubeWidth, cubeHeight, cubeDepth);
   
-  // mouse scaling
-  float[][] mouseScaleMatrix = scaleMatrix(mouseScale, mouseScale, mouseScale);
-  input3DBox = transformBox(input3DBox, mouseScaleMatrix);
-
   // UP / DOWN / LEFT / RIGHT  key rotation
   float[][] keyXRotationMatrix = rotateXMatrix(keyXRotation);
   float[][] keyYRotationMatrix = rotateYMatrix(keyYRotation);
@@ -24,33 +25,23 @@ void draw() {
   // rotated around x
   float[][] transform1 = rotateXMatrix(-PI/8);
   input3DBox = transformBox(input3DBox, transform1);
-  projectBox(eye, input3DBox).render();
 
   // rotated and translated
-  float[][] transform2 = translationMatrix(200, 200, 0);
+  float[][] transform2 = translationMatrix(width/2.0 - cubeWidth/2.0, height/2.0 - cubeHeight/2.0, 0 - cubeDepth/2.0);
   input3DBox = transformBox(input3DBox, transform2);
   projectBox(eye, input3DBox).render();
-
-  // rotated, translated, and scaled
-  float[][] transform3 = scaleMatrix(2, 2, 2);
-  input3DBox = transformBox(input3DBox, transform3);
-  projectBox(eye, input3DBox).render();
+  
+  
 }
 
 /**
   *  Week 3 : interactivity
 **/
 
-float mouseScale = 1.0;
+
 float keyXRotation = 0.0;
 float keyYRotation = 0.0;
-void mouseDragged() {
-  /*
-    *  When the mouse is dragged from top to bottom, mouseScale is increased
-    *  Otherwise if the mouse is dragged from bottom to top, mouseScale is decreased
-  */
-  mouseScale += (mouseX - pmouseX)/100.0;
-}
+
 
 void keyPressed() {
   /*
