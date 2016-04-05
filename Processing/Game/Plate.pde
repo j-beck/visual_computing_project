@@ -77,7 +77,6 @@ class Plate {
 	*		a 'small' angle change around the z axis
 	*/
 	public void updateAngle(float xAngleChange, float zAngleChange) {
-		// TODO : BOUNDARIES
 		this.xAngle += xAngleChange * sensitivity;
 		this.zAngle += zAngleChange * sensitivity;
 

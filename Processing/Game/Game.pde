@@ -22,6 +22,7 @@ final	float	CYLINDER_HEIGHT		=	30;
 final	float	PLATE_HEIGHT		=	3*WINDOW_WIDTH/7;
 final	float	PLATE_WIDTH			=	20;
 final	float	PLATE_DEPTH			=	PLATE_HEIGHT;
+final	float	BALL_RADIUS			=	12;
 
 void settings() {
 	size(WINDOW_WIDTH, WINDOW_HEIGHT, P3D);
@@ -45,7 +46,7 @@ void setup() {
 
 	plate = new Plate(centerX, centerY, centerZ,
 						PLATE_HEIGHT, PLATE_WIDTH, PLATE_DEPTH);
-	ball = new BallOnPlate(0, 0, 12, plate);
+	ball = new BallOnPlate(0, 0, BALL_RADIUS, plate);
 	mode = GameMode.PLAYING;
 
 	cylinders = new ArrayList<CylinderOnPlate>();

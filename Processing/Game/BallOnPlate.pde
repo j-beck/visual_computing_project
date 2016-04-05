@@ -30,7 +30,7 @@ class BallOnPlate {
 	*	@param plate
 	*		the plate the ball is to be placed on
 	*/
-	public BallOnPlate(float x, float z, float radius, Plate plate) {
+	public BallOnPlate(float x, float z, float radius, Plate plate) throws IllegalArgumentException {
 
 		this.location = new PVector(x, -radius -(plate.getWidth())/2.0, z);
 		this.radius = radius;
@@ -109,9 +109,6 @@ class BallOnPlate {
 		frictionForce.normalize();
 		frictionForce.mult(frictionM);
 
-		float minmaxX = plate.getHeight()/2.0;
-		float minmaxZ = plate.getDepth()/2.0;
-
 		this.checkEdges();
 		for (CylinderOnPlate c : cylinders) {
 			this.checkCylinder(c);
@@ -133,7 +130,7 @@ class BallOnPlate {
   public void drawTOP() {
     pushMatrix();
     plate.translateToPlateCoordinates();
-    translate(this.location.x,this.location.z,plate.getWidth());
+    translate(this.location.x,this.location.z,plate.getWidth()/2 + this.radius);
     rotateX(PI/2.);
     sphere(radius);
     popMatrix();
