@@ -12,11 +12,16 @@ class BallOnPlate {
 	public static final float GRAVITY_CONST = .5;
 	public static final float MU 			= .1;
 
-	private final float 	radius;
-	private Plate 			plate;
+	private final float radius;
+	private Plate plate;
 
-	private PVector 		location;
-	private PVector			velocity;
+	private PVector location;
+	private PVector velocity;
+
+	private float totalScore;
+	private float lastScore;
+
+	private float normVelocity;
 
 	/**
 	*	Builds a BallOnPlate
@@ -37,6 +42,19 @@ class BallOnPlate {
 		this.plate = plate;
 
 		this.velocity = new PVector(0, 0, 0);
+		this.normVelocity = 0;
+		this.totalScore = 0;
+		this.lastScore = 0;
+	}
+
+	public float getTotalScore() {
+		return this.totalScore;
+	}
+	public float getLastScore() {
+		return this.lastScore;
+	}
+	public float getNVelocity() {
+		return this.normVelocity;
 	}
 
 	/**
@@ -77,6 +95,10 @@ class BallOnPlate {
 
 
 		if (ball2DLocation.dist(cylinder2DLocation) <= this.radius + cylinder.getBaseRadius()) {
+			// Updates the scores
+			this.totalScore += normVelocity;
+			this.lastScore = normVelocity;
+
 			// Corrects the velocity
 			PVector normalVector = PVector.sub( ball2DLocation, cylinder2DLocation).normalize();
 			velocity = PVector.sub(velocity, PVector.mult(normalVector, 2 * normalVector.dot(velocity)));
@@ -96,6 +118,7 @@ class BallOnPlate {
 	*		the list of cylinders the ball may collide
 	*/
 	public void updateVelocity(List<CylinderOnPlate> cylinders) {
+		normVelocity = (float)Math.sqrt(velocity.x*velocity.x + velocity.y*velocity.y + velocity.z*velocity.z);
 		location.add(velocity);
 
 		// gravitation
@@ -127,13 +150,13 @@ class BallOnPlate {
 		popMatrix();
 	}
 
-  public void drawTOP() {
-    pushMatrix();
-    plate.translateToPlateCoordinates();
-    translate(this.location.x,this.location.z,plate.getWidth()/2 + this.radius);
-    rotateX(PI/2.);
-    sphere(radius);
-    popMatrix();
-  }
+	public void drawTOP() {
+	    pushMatrix();
+	    plate.translateToPlateCoordinates();
+	    translate(this.location.x,this.location.z,plate.getWidth()/2 + this.radius);
+	    rotateX(PI/2.);
+	    sphere(radius);
+	    popMatrix();
+	}
 
 }

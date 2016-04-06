@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
 *	The game itself
@@ -28,12 +30,14 @@ void settings() {
 	size(WINDOW_WIDTH, WINDOW_HEIGHT, P3D);
 }
 
+// TODO : camera
 
 // Game Parameters
 Plate 					plate;
 BallOnPlate 			ball;
 List<CylinderOnPlate> 	cylinders;
 GameMode 				mode;
+Surfaces				surfaces;
 
 float centerX, centerY, centerZ;
 
@@ -44,12 +48,16 @@ void setup() {
 	centerY = 2.8*WINDOW_HEIGHT/5.0;
 	centerZ = 0;
 
+
+
 	plate = new Plate(centerX, centerY, centerZ,
 						PLATE_HEIGHT, PLATE_WIDTH, PLATE_DEPTH);
 	ball = new BallOnPlate(0, 0, BALL_RADIUS, plate);
 	mode = GameMode.PLAYING;
 
 	cylinders = new ArrayList<CylinderOnPlate>();
+
+	surfaces = new Surfaces(width, height/6, plate, ball);
 }
 
 
@@ -60,15 +68,20 @@ void draw() {
 
 	switch(mode) {
 		case PLAYING:
+			camera(centerX, centerY - 0.5*PLATE_HEIGHT, centerZ + WINDOW_HEIGHT, centerX, centerY, centerZ, 0, 1, 0);
 			plate.draw();
 			ball.draw(cylinders);
 			for (CylinderOnPlate c : cylinders) {
 				c.draw();
 			}
+			camera();
+			surfaces.draw();
+
 			break;
 		case EDITING:
-			plate.drawTOP();
-                  ball.drawTOP();
+				camera();
+				plate.drawTOP();
+				ball.drawTOP();
 			for (CylinderOnPlate c : cylinders) {
 				c.drawTOP();
 			}
@@ -76,6 +89,8 @@ void draw() {
 		default:
 
 	}
+
+
 
 
 }
