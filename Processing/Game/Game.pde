@@ -15,16 +15,16 @@ import java.util.HashSet;
 
 
 // Game Settings
-final	int		WINDOW_WIDTH		=	1080;
-final	int		WINDOW_HEIGHT		=	720;
-final	int		FRAMERATE			=	60;
-final	int		CYLINDER_RESOLUTION	=	30;
-final	float	CYLINDER_RADIUS		=	25;
-final	float	CYLINDER_HEIGHT		=	30;
-final	float	PLATE_HEIGHT		=	3*WINDOW_WIDTH/7;
-final	float	PLATE_WIDTH			=	20;
-final	float	PLATE_DEPTH			=	PLATE_HEIGHT;
-final	float	BALL_RADIUS			=	12;
+final	static	int		WINDOW_WIDTH		=	1080;
+final	static	int		WINDOW_HEIGHT		=	720;
+final	static	int		FRAMERATE			=	60;
+final	static	int		CYLINDER_RESOLUTION	=	30;
+final	static	float	CYLINDER_RADIUS		=	25;
+final	static	float	CYLINDER_HEIGHT		=	30;
+final	static	float	PLATE_HEIGHT		=	3*WINDOW_WIDTH/7;
+final	static	float	PLATE_WIDTH			=	20;
+final	static	float	PLATE_DEPTH			=	PLATE_HEIGHT;
+final	static	float	BALL_RADIUS			=	12;
 
 void settings() {
 	size(WINDOW_WIDTH, WINDOW_HEIGHT, P3D);
@@ -57,7 +57,7 @@ void setup() {
 
 	cylinders = new ArrayList<CylinderOnPlate>();
 
-	surfaces = new Surfaces(width, height/6, plate, ball);
+	surfaces = new Surfaces(plate, ball);
 }
 
 

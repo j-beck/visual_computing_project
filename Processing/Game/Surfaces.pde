@@ -9,9 +9,18 @@
 */
 
 class Surfaces {
+
+	// dimensions of the background
+	private final int BGHEIGHT = WINDOW_HEIGHT/6;
+	private final int BGWIDTH = WINDOW_WIDTH;
+	// dimensions of the scoreboard
+	private final int SBHEIGHT = (int)(0.9 * BGHEIGHT);
+	private final int SBWIDTH = (int)(0.1 * WINDOW_WIDTH);
+
+	private final float plateScale; // to print the topview of the plate, we need to scale down the plate
+
+
 	private final PGraphics background;
-	private final int backgroundWidth;
-	private final int backgroundHeight;
 
 	private final PGraphics topView;
 	private Plate plate;
@@ -22,18 +31,16 @@ class Surfaces {
 
 
 
-	Surfaces (int backgroundWidth, int backgroundHeight, Plate plate, BallOnPlate ball) {
-		this.background = createGraphics(backgroundWidth, backgroundHeight, P2D);
-		this.backgroundWidth = backgroundWidth;
-		this.backgroundHeight = backgroundHeight;
+	Surfaces (Plate plate, BallOnPlate ball) {
+		this.background = createGraphics(BGWIDTH, BGHEIGHT, P2D);
 
-		float scale = 9*backgroundHeight/(10*plate.getHeight());
+		this.plateScale = 0.9*BGHEIGHT/plate.getHeight();
 
-		this.topView = createGraphics( (int)(plate.getHeight() * scale), (int)(plate.getDepth() * scale), P2D);
+		this.topView = createGraphics( (int)(plate.getHeight() * plateScale), (int)(plate.getDepth() * plateScale), P2D);
 		this.plate = plate;
 		this.ball = ball;
 
-		this.scoreboard = createGraphics( (int)(width/10), (int)(0.9*backgroundHeight), P2D);
+		this.scoreboard = createGraphics( SBWIDTH, SBWIDTH, P2D);
 	}
 
 	void drawBackground() {
@@ -44,9 +51,7 @@ class Surfaces {
 
 	void drawTopView() {//List<CylinderOnPlate> cylinders, Set<PVector> previousLocations) {
 		topView.beginDraw();
-		float h = 9*backgroundHeight/10;
-		float scale = h/plate.getHeight();
-		topView.rect(0, 0, plate.getHeight() * scale, plate.getDepth() * scale);
+		topView.rect(0, 0, plate.getHeight() * plateScale, plate.getDepth() * plateScale);
 		topView.endDraw();
 	}
 
@@ -54,7 +59,7 @@ class Surfaces {
 		scoreboard.beginDraw();
 		scoreboard.background(200);
 		scoreboard.fill(250);
-		scoreboard.rect(width/250, width/250, 0.1*width - width/125, 0.9*backgroundHeight - width/100); // inner rectangle
+		scoreboard.rect(width/250, width/250, 0.1*width - width/125, 0.9*BGHEIGHT - width/100); // inner rectangle
 		scoreboard.fill(0);
 		String s = "Total Score : \n" + ball.getTotalScore() + "\n" + "Velocity : \n" + ball.getNVelocity() + "\n" + "Last Score : \n" + ball.getLastScore();
 		scoreboard.text(s, width/250, (width/50), 0);
@@ -64,18 +69,16 @@ class Surfaces {
 	void draw() {
 		pushStyle();
 		pushMatrix();
-		translate(0, height-backgroundHeight); // translation to the surfaces zone
+		translate(0, height-BGHEIGHT); // translation to the surfaces zone
 
 		this.drawBackground();
 		image(background, 0, 0);
 
-		float h = 9*backgroundHeight/10;
-		float scale = h/plate.getHeight();
 		translate(0.01*height , 0.01*height);
 		this.drawTopView();
 		image(topView, 0, 0);
 
-		translate(1.1*plate.getHeight() * scale, 0);
+		translate(1.1*plate.getHeight() * plateScale, 0);
 		this.drawScoreboard();
 		image(scoreboard, 0, 0);
 
