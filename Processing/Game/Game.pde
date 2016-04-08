@@ -68,7 +68,7 @@ void draw() {
 
 	switch(mode) {
 		case PLAYING:
-			camera(centerX, centerY - 0.5*PLATE_HEIGHT, centerZ + WINDOW_HEIGHT, centerX, centerY, centerZ, 0, 1, 0);
+			camera(centerX, centerY - 1*PLATE_HEIGHT, centerZ + 1*WINDOW_HEIGHT, centerX, centerY, centerZ, 0, 1, 0);
 			plate.draw();
 			ball.draw(cylinders);
 			for (CylinderOnPlate c : cylinders) {
