@@ -56,7 +56,14 @@ class BallOnPlate {
 	public float getNVelocity() {
 		return this.normVelocity;
 	}
-
+  public PVector getLocation(){
+    return this.location.copy();
+  }
+  
+  public float getRadius(){
+    return this.radius;
+  }
+  
 	/**
 	*	Checks if the ball is out of the plate, if yes corrects the speed to go back on the plate
 	*	Only consider the center of the ball
