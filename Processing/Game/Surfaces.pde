@@ -104,7 +104,7 @@ class Surfaces {
 		scoreboard.rect(0.025 * SBWIDTH, 0.025 * PGHEIGHT, 0.95 * SBWIDTH, 0.95 * PGHEIGHT); // inner rectangle
 		scoreboard.fill(0);
 		float textsize = 0.09*PGHEIGHT; // dont know why PGHEIGHT*0.95/6 doesnt work
-		scoreboard.textSize(textsize);
+		scoreboard.textSize((int)textsize);
 		float Woffset = 0.025 * SBWIDTH; // We offset the text so it doesnt touch the rectangle
 		// TODO : print the floats with less precision
 		String s = "Total Score : \n" + ball.getTotalScore() + "\n" + "Velocity : \n" + ball.getNVelocity() + "\n" + "Last Score : \n" + ball.getLastScore(); // exactly 6 lines
