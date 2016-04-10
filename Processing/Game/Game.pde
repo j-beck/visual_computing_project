@@ -17,7 +17,7 @@ import java.util.HashSet;
 // Game Settings
 final	static	int		WINDOW_WIDTH		=	1080;
 final	static	int		WINDOW_HEIGHT		=	720;
-final	static	int		FRAMERATE			=	60;
+final	static	int		FRAMERATE			=	100;
 final	static	int		CYLINDER_RESOLUTION	=	30;
 final	static	float	CYLINDER_RADIUS		=	25;
 final	static	float	CYLINDER_HEIGHT		=	30;
@@ -27,7 +27,8 @@ final	static	float	PLATE_DEPTH			=	PLATE_HEIGHT;
 final	static	float	BALL_RADIUS			=	12;
 
 void settings() {
-	size(WINDOW_WIDTH, WINDOW_HEIGHT, P3D);
+  size(1080,720, P3D);
+  
 }
 
 // TODO : camera
@@ -57,7 +58,7 @@ void setup() {
 
 	cylinders = new ArrayList<CylinderOnPlate>();
 
-	surfaces = new Surfaces(plate, ball);
+	surfaces = new Surfaces(plate, ball, cylinders);
 }
 
 
