@@ -5,7 +5,7 @@
  *	@author Thomas Avon
  *	@author Pierre Thévenet
  *
- *	@version 2016-04-08
+ *	@version 2016-04-10
  */
 
 import java.util.List;
@@ -14,12 +14,23 @@ class Surfaces {
   /**
    		Placement :
 
+		// Previous version
    		<-----------BGWIDHT----------->
 
    		|---------|----|---- ---- ---- ---- ----|  ^  B
    		| TP      | SB |	     BC + SB        |  |  G
    		| 1/4     |1/8 |	    	5/8         |  |  Height
    		|---------|----|---- ---- ---- ---- ----|  v
+
+
+		// Current version
+   		<-----------BGWIDHT----------->
+
+   		|---------|----|---- ---- ---- ---- --------|  ^  B
+   		| TP      | SB |	     BC + scrollbar     |  |  G
+		| Variable| 1/8| Variable (remaining space) |  |  Height
+   		|---------|----|---- ---- ---- ---- --------|  v
+
 
    		TopView takes 1/4 of BGWIDTH, overflow can appear if the ration plate.getWidth()/plate.getHeight() is too high
    		Scoreboard takes 1/8 of BGWIDTH
@@ -32,14 +43,22 @@ class Surfaces {
   private final int BGHEIGHT = WINDOW_HEIGHT/5;
   private final int BGWIDTH = WINDOW_WIDTH;
 
-  private final int PGHEIGHT = (int)(0.9 * BGHEIGHT); // same height for every PGraphics other than the background
+  private final int PGHEIGHT = (int)(0.9 * BGHEIGHT); // same height for every PGraphics other than the background (and the barchart and scrobar but the sum of their height is still PGHEIGHT)
   private final int OFFSET = (int)(0.05 * BGHEIGHT); // the offset of the x and y pos of the PGraphics from the zones described by the drawing above
+
+  // length of the ball's trace in the topview
+  private final int TRACE_LENGTH = 300;
 
   // dimensions of the scoreboard
   private final int SBWIDTH = (int)(0.125 * BGWIDTH - 2*OFFSET);
 
-  // length of the ball's trace in the topview
-  private final int TRACE_LENGTH = 300;
+  // dimensions of the barchart
+  private final int BCHEIGHT = (int)(0.7 * BGHEIGHT);
+  private final int BCWIDTH = (int)(0.625 * BGWIDTH - 2*OFFSET);
+
+  // dimensions of the scrollbar
+  private final int SCBHEIGHT = (int)(0.2 * BGHEIGHT);
+  private final int SCWIDTH = (int)(0.625 * BGWIDTH - 2*OFFSET);
 
 
   private final float plateScale; // to print the topview of the plate, we need to scale down the plate,
@@ -56,9 +75,11 @@ class Surfaces {
 
   private final PGraphics scoreboard;
 
+  private BarChart barchart;
+
   // Needed attributes
   private Plate plate;			// To display the topView of the plate
-  private	BallOnPlate ball;		// To display the ball on topView and get the scores
+  private BallOnPlate ball;		// To display the ball on topView and get the scores
   private List<CylinderOnPlate> cylinders;
 
   //Needed to draw trace in topView
@@ -74,14 +95,18 @@ class Surfaces {
     // PGraphics
     this.background = createGraphics(BGWIDTH, BGHEIGHT, P2D);
 
-    this.topView = createGraphics( (int)(plateScale * plate.getHeight()), (int)( plateScale * plate.getDepth()), P2D); // In fact the height is equal to PGHEIGHT
+	this.topView = createGraphics( (int)(plateScale * plate.getHeight()), (int)( plateScale * plate.getDepth()), P2D); // In fact the height is equal to PGHEIGHT
 
     this.scoreboard = createGraphics(SBWIDTH, PGHEIGHT, P2D);
 
     trace = new PVector[TRACE_LENGTH];
     for (int i = 0; i< trace.length; ++i)
       trace[i] = ball.getLocation();
-  }
+
+
+	this.barchart = new BarChart(BCWIDTH, BCHEIGHT, 7, 7, 3);
+
+  	}
 
   void drawBackground() {
     background.beginDraw();
@@ -89,8 +114,7 @@ class Surfaces {
     background.endDraw();
   }
 
-  void drawTopView() {//List<CylinderOnPlate> cylinders, Set<PVector> previousLocations){
-    // TODO : dessiner la balle, les cylindres, et les "fantomes" de la balle
+  void drawTopView() {
     topView.beginDraw();
     topView.noStroke();
     float height = plateScale * plate.getHeight();
@@ -119,7 +143,7 @@ class Surfaces {
     topView.fill(200,50,0);
     topView.ellipse(plateScale * loc.x, plateScale * loc.z, 2*ballRadius, 2*ballRadius);
 
-    //draw cylinders
+    // draw cylinders
     topView.fill(230);
     for (CylinderOnPlate c : cylinders) {
       float radius = plateScale * c.getBaseRadius();
@@ -130,19 +154,20 @@ class Surfaces {
 
   void drawScoreboard() {
     /*
-						<---------W---------->
-     					_____________________	^
-     					|  ----------------  |	|	The distance of the top and bottom side of the inner rectangle from the outer is the H/40
-     					|  |              |  |	|	The distance of the left and right side of the inner rectangle from the outer is the W/40
-     					|  |              |  |	|
-     					|  |              |  |	H
-     					|  |              |  |	|
-     					|  |              |  |	|
-     					|  |              |  |	|
-     					|  ----------------  |	|
-     					|--------------------|	v
+		<---------W---------->
+			_____________________	^
+			|  ----------------  |	|	The distance of the top and bottom side of the inner rectangle from the outer is the H/40
+			|  |              |  |	|	The distance of the left and right side of the inner rectangle from the outer is the W/40
+			|  |              |  |	|
+			|  |              |  |	H
+			|  |              |  |	|
+			|  |              |  |	|
+			|  |              |  |	|
+			|  ----------------  |	|
+			|--------------------|	v
 
-     			*/
+     */
+
     scoreboard.beginDraw();
     scoreboard.background(250);
     scoreboard.fill(BGRedColor, BGGreenColor, BGBlueColor);
@@ -156,6 +181,10 @@ class Surfaces {
     String s = "Total Score : \n" + ball.getTotalScore() + "\n" + "Velocity : \n" + ball.getNVelocity() + "\n" + "Last Score : \n" + ball.getLastScore(); // exactly 6 lines
     scoreboard.text(s, 0.05 * SBWIDTH + Woffset, 0.15 * PGHEIGHT, 0); // dont understand why with text.y pos = 0.05*PGHEIGHT it doesnt work
     scoreboard.endDraw();
+  }
+
+  void drawBarChart(float lastScore) {
+	  this.barchart.draw(lastScore);
   }
 
   void draw() {
@@ -174,7 +203,10 @@ class Surfaces {
 
     // Here we draw the scoreboard independently
     pushMatrix();
-    translate(BGWIDTH/4, height-BGHEIGHT);
+	// previous version :
+    //translate(BGWIDTH/4, height-BGHEIGHT);
+	// current version :
+	translate((int)(plateScale * plate.getHeight()) + 2*OFFSET, height-BGHEIGHT);
     translate(OFFSET, OFFSET);
     this.drawScoreboard();
     image(scoreboard, 0, 0);
@@ -182,9 +214,12 @@ class Surfaces {
 
     // Here we draw the Barchart and the scrollbar independently
     pushMatrix();
-    translate(BGWIDTH/4 + BGWIDTH/8, height-BGHEIGHT);
+    translate((int)(plateScale * plate.getHeight()) + 2*OFFSET, height-BGHEIGHT);
+	translate(BGWIDTH/8, 0);
     translate(OFFSET, OFFSET);
     // TODO : draw the Barchart and the scrollbar
+	this.drawBarChart(ball.getTotalScore());
+	image(barchart.getPGraphics(), 0, 0);
     popMatrix();
 
     popStyle();

@@ -1,7 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
+
 
 /**
 *	The game itself
@@ -27,11 +26,10 @@ final	static	float	PLATE_DEPTH			=	PLATE_HEIGHT;
 final	static	float	BALL_RADIUS			=	12;
 
 void settings() {
-  size(1080,720, P3D);
-  
+  size(WINDOW_WIDTH, WINDOW_HEIGHT, P3D);
+
 }
 
-// TODO : camera
 
 // Game Parameters
 Plate 					plate;

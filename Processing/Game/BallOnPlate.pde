@@ -45,6 +45,7 @@ class BallOnPlate {
 		this.normVelocity = 0;
 		this.totalScore = 0;
 		this.lastScore = 0;
+
 	}
 
 	public float getTotalScore() {
@@ -59,33 +60,42 @@ class BallOnPlate {
   public PVector getLocation(){
     return this.location.copy();
   }
-  
+
   public float getRadius(){
     return this.radius;
   }
-  
+
 	/**
 	*	Checks if the ball is out of the plate, if yes corrects the speed to go back on the plate
 	*	Only consider the center of the ball
 	*	Does not reduce the magnitude of the speed
 	*/
 	public void checkEdges() {
-
+		boolean flag = false;
 		if (location.x > plate.getHeight()/2.0) {
 			location.x = plate.getHeight()/2.0;
 			velocity.x *= -1;
+			flag = true;
 		}
 		else if (location.x < -plate.getHeight()/2.0) {
 			location.x = -plate.getHeight()/2.0;
 			velocity.x *= -1;
+			flag = true;
 		}
 		if (location.z > plate.getDepth()/2.0) {
 			location.z = plate.getDepth()/2.0;
 			velocity.z *= -1;
+			flag = true;
 		}
 		else if (location.z < -plate.getDepth()/2.0) {
 			location.z = -plate.getDepth()/2.0;
 			velocity.z *= -1;
+			flag = true;
+		}
+
+		if (flag == true) {
+			this.totalScore -= normVelocity;
+			this.lastScore = -normVelocity;
 		}
 
 	}
