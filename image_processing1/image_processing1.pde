@@ -4,6 +4,10 @@ HScrollbar thresholdBar;
 HScrollbar hueBar1;
 HScrollbar hueBar2;
 
+float[][] gaussianKernel = {	{9,12,9},
+								{12,15, 12},
+								{9,12,9}	};
+
 void settings() {
 	size(800, 600);
 }
@@ -11,14 +15,17 @@ void settings() {
 void setup() {
 	img = loadImage("board1.jpg");
 	//thresholdBar = new HScrollbar(0, 580, 800, 20);
-	hueBar1 = new HScrollbar(0, 580, 800, 20);
-	hueBar2 = new HScrollbar(0, 550, 800, 20);
+	//hueBar1 = new HScrollbar(0, 580, 800, 20);
+	//hueBar2 = new HScrollbar(0, 550, 800, 20);
 
 
 }
 
 void draw() {
-	PImage s = sobel(img);
+	float a = 110;
+	float b = 140;
+	//PImage s = convolute(img, gaussianKernel, 3);
+	PImage s = sobel(convolute(selectColor(img, a, b), gaussianKernel, 3));
 	image(s, 0, 0);
 
 }
@@ -57,12 +64,11 @@ PImage hueImage(PImage img) {
 }
 
 PImage selectColor(PImage img, float a, float b)  {
-
 	PImage result = createImage(img.width, img.height, RGB);
 	if (a < b) {
 		for (int i = 0; i < img.width * img.height; i++) {
 			float h = hue(img.pixels[i]);
-			if (h >= a && h <= b) {
+			if (h >= a && h <= b && saturation(img.pixels[i]) > 130) { // On supprime les couleur trop claires
 				result.pixels[i] = img.pixels[i];
 			} else {
 				result.pixels[i] = color(0);
