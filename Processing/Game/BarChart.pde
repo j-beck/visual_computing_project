@@ -43,12 +43,19 @@ class BarChart {
 
 	// Idea : BCHeight = max(score), the rest is a fraction of it
 	public void draw(float lastScore) {
-		this.scores.add(lastScore);
-		this.maxScore = max(maxScore, lastScore);
-
 		int nbColumns = BCWidth / (rectanglesWidth + offset); // number of 'columns' in the drawing
 		int nbLines = BCHeight / (rectanglesHeight + offset);
+		int m = nbColumns;
+
 		int size = scores.size();
+		if (size > 0 && scores.get(size-1) != lastScore && ( abs(scores.get(size-1)-lastScore)/maxScore )*nbLines >= 1 ) {
+			this.scores.add(lastScore);
+		} else if (size <= 0) {
+			this.scores.add(lastScore);
+		}
+		this.maxScore = max(maxScore, lastScore);
+
+
 
 		pGraph.pushMatrix();
 		pGraph.beginDraw();
@@ -56,46 +63,15 @@ class BarChart {
 		pGraph.translate(0, BCHeight - offset);
 		pGraph.fill(51,153,255);
 
+		int start = max(size - m, 0);
 
-		for (int i = 0; i < nbColumns; i++) {
-			for (int j = 0; j < nbLines; j++) {
+
+		for (int i = 0; i < min(m, size); i++) {
+			int nbRect = (int)((scores.get(start + i) / maxScore) * nbLines);
+			for (int j = 0; j < nbRect; j++) {
 				pGraph.rect(offset/2 + i * (offset + rectanglesWidth), - j * (offset + rectanglesHeight), rectanglesWidth, -rectanglesHeight);
 			}
 		}
-
-
-
-
-		/*
-
-		if (nbC >= scores.size()) {
-			// we have enough space to draw all scores
-			for (int i = 0; i < scores.size(); i++) {
-
-				float cS = scores.get(i);
-				int numberOfRectangles = (int) (cS / maxScore);
-				for (int j = 0; j < numberOfRectangles; j++) {
-					pGraph.rect(offset/2, -offset/2 - j*(offset + rectanglesHeight), rectanglesWidth, rectanglesHeight);
-				}
-				pGraph.translate(offset + rectanglesWidth, 0);
-
-			}
-
-		}
-		else {
-			// we have to draw the scores from scores.size()-nbR to scores.size()-1
-			for (int i = scores.size()-nbC; i < scores.size(); i++) {
-				float cS = scores.get(i);
-				int numberOfRectangles = (int) (cS / maxScore);
-				for (int j = 0; j < numberOfRectangles; j++) {
-					pGraph.rect(offset/2, -offset/2 - j*(offset + rectanglesHeight), rectanglesWidth, rectanglesHeight);
-					pGraph.translate(0, -offset - rectanglesHeight);
-				}
-				pGraph.translate(offset + rectanglesWidth, 0);
-			}
-		}
-
-		*/
 
 		pGraph.endDraw();
 		pGraph.popMatrix();
@@ -106,6 +82,11 @@ class BarChart {
 		return pGraph;
 	}
 
-
+	public void setRectanglesWidth(int newWidth) {
+		// TODO : arbitrary max
+		if (newWidth > 0 && newWidth < 20) {
+			this.rectanglesWidth = newWidth;
+		}
+	}
 
 }

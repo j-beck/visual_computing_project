@@ -57,7 +57,7 @@ class Surfaces {
   private final int BCWIDTH = (int)(0.625 * BGWIDTH - 2*OFFSET);
 
   // dimensions of the scrollbar
-  private final int SCBHEIGHT = (int)(0.2 * BGHEIGHT);
+  private final int SCHEIGHT = (int)(0.2 * BGHEIGHT);
   private final int SCWIDTH = (int)(0.625 * BGWIDTH - 2*OFFSET);
 
 
@@ -76,6 +76,8 @@ class Surfaces {
   private final PGraphics scoreboard;
 
   private BarChart barchart;
+
+  private HScrollbar scrollbar;
 
   // Needed attributes
   private Plate plate;			// To display the topView of the plate
@@ -105,6 +107,16 @@ class Surfaces {
 
 
 	this.barchart = new BarChart(BCWIDTH, BCHEIGHT, 7, 7, 3);
+
+/*
+	translate((int)(plateScale * plate.getHeight()) + 2*OFFSET, height-BGHEIGHT);
+	translate(BGWIDTH/8, 0);
+	translate(OFFSET, OFFSET);
+	translate(0, OFFSET + BCHEIGHT);
+	*/
+	int x = (int)( (plateScale * plate.getHeight()) + 2*OFFSET + BGWIDTH/8 + OFFSET);
+	int y = height-BGHEIGHT + 2 * OFFSET + BCHEIGHT;
+	this.scrollbar = new HScrollbar(x, y, SCWIDTH, SCHEIGHT);
 
   	}
 
@@ -184,6 +196,7 @@ class Surfaces {
   }
 
   void drawBarChart(float lastScore) {
+	  this.barchart.setRectanglesWidth((int)(scrollbar.getPos() * 20));
 	  this.barchart.draw(lastScore);
   }
 
@@ -222,6 +235,17 @@ class Surfaces {
 	image(barchart.getPGraphics(), 0, 0);
     popMatrix();
 
+	// Here we draw the scrollbar
+	pushMatrix();
+
+	scrollbar.update();
+	scrollbar.display();
+	popMatrix();
+
     popStyle();
+  }
+
+  public int getHeight() {
+	  return BGHEIGHT;
   }
 }

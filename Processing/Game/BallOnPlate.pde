@@ -74,27 +74,28 @@ class BallOnPlate {
 		boolean flag = false;
 		if (location.x > plate.getHeight()/2.0) {
 			location.x = plate.getHeight()/2.0;
-			velocity.x *= -1;
+			velocity.x *= -0.9;
 			flag = true;
 		}
 		else if (location.x < -plate.getHeight()/2.0) {
 			location.x = -plate.getHeight()/2.0;
-			velocity.x *= -1;
+			velocity.x *= -0.9;
 			flag = true;
 		}
 		if (location.z > plate.getDepth()/2.0) {
 			location.z = plate.getDepth()/2.0;
-			velocity.z *= -1;
+			velocity.z *= -0.9;
 			flag = true;
 		}
 		else if (location.z < -plate.getDepth()/2.0) {
 			location.z = -plate.getDepth()/2.0;
-			velocity.z *= -1;
+			velocity.z *= -0.9;
 			flag = true;
 		}
 
 		if (flag == true) {
 			this.totalScore -= normVelocity;
+			this.totalScore = max(0, totalScore);
 			this.lastScore = -normVelocity;
 		}
 
@@ -114,11 +115,12 @@ class BallOnPlate {
 		if (ball2DLocation.dist(cylinder2DLocation) <= this.radius + cylinder.getBaseRadius()) {
 			// Updates the scores
 			this.totalScore += normVelocity;
+			this.totalScore = max(totalScore, 0);
 			this.lastScore = normVelocity;
 
 			// Corrects the velocity
 			PVector normalVector = PVector.sub( ball2DLocation, cylinder2DLocation).normalize();
-			velocity = PVector.sub(velocity, PVector.mult(normalVector, 2 * normalVector.dot(velocity)));
+			velocity = PVector.mult(PVector.sub(velocity, PVector.mult(normalVector, 2 * normalVector.dot(velocity))), 0.9);
 
 			// Corrects the location
 			normalVector.mult(radius + cylinder.getBaseRadius());

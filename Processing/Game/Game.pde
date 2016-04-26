@@ -97,8 +97,10 @@ void draw() {
 void mouseDragged() {
 	switch(mode) {
 		case PLAYING:
+		if (mouseY < WINDOW_HEIGHT - surfaces.getHeight()) {
 			plate.updateAngle(-(mouseY - pmouseY)*PI/pow(10,4),
 								(mouseX - pmouseX)*PI/pow(10,4));
+		}
 			break;
 		case EDITING:
 			break;
