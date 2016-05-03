@@ -187,7 +187,23 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines, int minVotes)
 	}
 	*/
 }
+/*
+ArrayList<PVector> getIntersection(List<PVector> lines) {
+	ArrayList<PVector> intersections = new ArrayList<PVector>();
+	for (int i = 0; i < lines.size() - 1; i++) {
+		PVector line1 = lines.get(i);
+		for (int j = i + 1; j < lines.size(); j++) {
+			PVector line2 = lines.get(j);
+			// compute the intersection and add it to 'intersections'
 
+			// draw the intersection
+			fill(255, 128, 0);
+			ellipse(x, y, 10, 10);
+		}
+	}
+	return intersections;
+}
+*/
 void printLines(List<PVector> lines, PImage edgeImg) {
 	for (int i = 0; i < lines.size(); i++) {
 		float r = lines.get(i).x;
