@@ -1,5 +1,6 @@
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import processing.video.*;
 
@@ -23,13 +24,13 @@ void setup()
         println("There are no cameras available for capture.");
         exit();
     } else {
-        /*
+		/*
         println("Available cameras:");
         for (int i = 0; i < cameras.length; i++) {
             println(i + cameras[i]);
-        }
-        */
-        cam = new Capture(this, cameras[81]);
+        } */
+
+        cam = new Capture(this, 640, 480, 30);
         cam.start();
     }
 }
@@ -38,22 +39,64 @@ void draw()
 {
     float a = 90;
     float b = 140;
-    float c = 130;
-    img = loadImage("board3.jpg");
-    /*
+    float c = 70;
+    //img = loadImage("board4.jpg");
+
     if (cam.available() == true) {
         cam.read();
     }
     img = cam.get();
-    */
-    image(img, 0, 0);
 
-    PImage s = convolute(selectColor(img, a, b, c), gaussianKernel, 3);
-    s = sobel(s);
-    ArrayList<PVector> hLines = hough(s, 4, 100);
-    printLines(hLines, s);
-    ArrayList<PVector> hIntersections = getIntersections(hLines);
-    printIntersections(hIntersections);
+
+	// HUE / BRIGHTNESS / SATURATION thresholding
+	PImage s = selectColor(img, a, b, c); // hue & saturation
+	//s = binaryThreshold(s, 0);
+
+	// BLURRING
+	s = convolute(s, gaussianKernel, 3);
+	image(s, 0, 0);
+	// INTENSITY
+	s = binaryThreshold(s, 20);
+
+
+	// SOBEL
+	s = sobel(s);
+
+	// HOUGH
+	ArrayList<PVector> hLines = hough(s, 8, 100);
+	ArrayList<PVector> hIntersections = getIntersections(hLines);
+
+
+	QuadGraph QG = new QuadGraph();
+	QG.build(hLines, s.width, s.height);
+	QG.findCycles();
+
+
+	// PRINTING
+	//image(img, 0, 0);
+	printLines(hLines, s);
+	printIntersections(hIntersections);
+	for (int[] quad : QG.cycles) {
+		PVector l1 = hLines.get(quad[0]);
+		PVector l2 = hLines.get(quad[1]);
+		PVector l3 = hLines.get(quad[2]);
+		PVector l4 = hLines.get(quad[3]);
+		// (intersection() is a simplified version of the
+		// intersections() method you wrote last week, that simply
+		// return the coordinates of the intersection between 2 lines)
+		PVector c12 = intersection(l1, l2);
+		PVector c23 = intersection(l2, l3);
+		PVector c34 = intersection(l3, l4);
+		PVector c41 = intersection(l4, l1);
+		// Choose a random, semi-transparent colour
+		Random random = new Random();
+		fill(color(min(255, random.nextInt(300)),
+		min(255, random.nextInt(300)),
+		min(255, random.nextInt(300)), 50));
+		quad(c12.x,c12.y,c23.x,c23.y,c34.x,c34.y,c41.x,c41.y);
+	}
+
+
 }
 
 ArrayList<PVector> hough(PImage edgeImg, int nLines, int minVotes)
@@ -151,6 +194,19 @@ ArrayList<PVector> hough(PImage edgeImg, int nLines, int minVotes)
     return lines;
 }
 
+PVector intersection(PVector v1, PVector v2) {
+	float phi1 = v1.y;
+	float phi2 = v2.y;
+	float r1 = v1.x;
+	float r2 = v2.x;
+	float d = cos(phi2)*sin(phi1) - cos(phi1)*sin(phi2);
+	float x = r2 * sin(phi1) - r1 * sin(phi2);
+	x = x/ d;
+	float y = r1 * cos(phi2) - r2 * cos(phi1);
+	y = y / d;
+	return new PVector(x, y);
+
+}
 
 ArrayList<PVector> getIntersections(List<PVector> lines)
 {
@@ -223,7 +279,7 @@ void printLines(List<PVector> lines, PImage edgeImg)
 PImage binaryThreshold(PImage img, float threshold)
 {
 
-    PImage result = createImage(width, height, RGB);
+    PImage result = createImage(img.width, img.height, RGB);
     for (int i = 0; i < img.width * img.height; i++) {
         if (brightness(img.pixels[i]) >= threshold) {
             result.pixels[i] = color(255, 255, 255);
