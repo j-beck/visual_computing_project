@@ -9,7 +9,7 @@ float RESIZE_FACTOR;
 int IMG_HEIGHT;
 
 int IMG_WIDTH = 400; //the width of the output images.
-String imgName = "board4.jpg";
+String imgName = "board1.jpg";
 
 float[][] gaussianKernel = {	{9, 12, 9},
     {12, 15, 12},
