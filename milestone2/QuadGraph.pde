@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 class QuadGraph
 {
-
-
     List<int[]> cycles = new ArrayList<int[]>();
     int[][] graph;
     List<PVector> lines;
@@ -25,11 +23,6 @@ class QuadGraph
         for (int i = 0; i < lines.size(); i++) {
             for (int j = i + 1; j < lines.size(); j++) {
                 if (intersect(lines.get(i), lines.get(j), width, height)) {
-
-                    // TODO
-                    // fill the graph using intersect() to check if two lines are
-                    // connected in the graph.
-
                     graph[idx][0] = i;
                     graph[idx][1] = j;
 
@@ -102,7 +95,6 @@ class QuadGraph
             for (int i = 1; i < cy.length; i++) {
                 s += "," + cy[i];
             }
-            //System.out.println(s);
         }
         return cycles;
     }
@@ -300,11 +292,9 @@ class QuadGraph
 
         float area = getArea(c1,c2,c3,c4);
 
-        //System.out.println(area);
 
         boolean valid = (area < max_area && area > min_area);
 
-        //if (!valid) System.out.println("Area out of range");
 
         return valid;
     }
@@ -316,7 +306,7 @@ class QuadGraph
     {
 
         // cos(70deg) ~= 0.3
-        float min_cos = 0.5f;
+        float min_cos = 0.6f;
 
         PVector v21= PVector.sub(c1, c2);
         PVector v32= PVector.sub(c2, c3);
