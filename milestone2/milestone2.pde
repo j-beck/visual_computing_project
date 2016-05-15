@@ -7,8 +7,9 @@ int ORIG_WIDTH;
 int ORIG_HEIGHT;
 float RESIZE_FACTOR;
 int IMG_HEIGHT;
-
 int IMG_WIDTH = 400; //the width of the output images.
+
+
 String imgName = "board1.jpg";
 
 float[][] gaussianKernel = {	{9, 12, 9},
@@ -19,7 +20,7 @@ float[][] gaussianKernel = {	{9, 12, 9},
 void settings()
 {
     PImage img = loadImage(imgName);
-    ORIG_WIDTH =img.width;
+    ORIG_WIDTH = img.width;
     ORIG_HEIGHT = img.height;
     RESIZE_FACTOR = IMG_WIDTH/(float)ORIG_WIDTH;
     IMG_HEIGHT = IMG_WIDTH*ORIG_HEIGHT/ORIG_WIDTH;
@@ -31,30 +32,28 @@ void draw()
     float minHue = 90;
     float maxHue = 140;
     float maxSat = 68;
+    float brightnessThreshold = 33;
 
     PImage img = loadImage(imgName);
 
-
     // HUE / BRIGHTNESS / SATURATION thresholding
     PImage s = img;
-    s = selectColor(s, minHue, maxHue,maxSat); // hue & saturation
+    s = selectColor(s, minHue, maxHue, maxSat); // hue & saturation
 
     // BLURRING
     s = convolute(s, gaussianKernel, 3);
     // INTENSITY
-    s = binaryThreshold(s, 33);
-
+    s = binaryThreshold(s, brightnessThreshold);
 
     // SOBEL
     s = sobel(s);
-
 
     // HOUGH
     PImage houghImg = createImage(1,1, ALPHA); //output image, will be resized by the houghWithDisplayfunction.
     ArrayList<PVector> hLines = houghWithDisplay(s,houghImg, 6, 100);
 
 
-    //EXTRACT BEST RESULT:
+    // EXTRACT BEST RESULT:
     QuadGraph QG = new QuadGraph();
     QG.build(hLines, s.width, s.height);
     QG.findCycles();
@@ -62,7 +61,9 @@ void draw()
     int[] quad = QG.getBiggestCycle();
 
 
-    //PRINT RESULTS TO SCREEN
+    // PRINT RESULTS TO SCREEN
+
+    // I. Four corners of the best quad detected
     img.resize(IMG_WIDTH, IMG_HEIGHT);
     image(img,0,0);
     if(quad.length > 0) {
@@ -79,8 +80,11 @@ void draw()
         printIntersections(Arrays.asList(c12,c23,c34,c41));
     }
 
+    // II. Hough accumulator
     houghImg.resize(IMG_WIDTH,IMG_HEIGHT);
     image(houghImg, IMG_WIDTH, 0);
+
+    // III. Sobel edge detector
     s.resize(IMG_WIDTH, IMG_HEIGHT);
     image(s,2*IMG_WIDTH,0);
 }
@@ -92,7 +96,7 @@ ArrayList<PVector> houghWithDisplay(PImage edgeImg,PImage outImg, int nLines, in
     float discretizationStepsPhi = .06f;
     float discretizationStepsR = 2.5f;
 
-    //dimensions of the accumulator
+    // dimensions of the accumulator
     int phiDim = (int) (Math.PI / discretizationStepsPhi);
     int rDim = (int) (((edgeImg.width + edgeImg.height) *2 +1) / discretizationStepsR);
 
@@ -107,8 +111,6 @@ ArrayList<PVector> houghWithDisplay(PImage edgeImg,PImage outImg, int nLines, in
         tabSin[accPhi] = (float) (Math.sin(ang) * inverseR);
         tabCos[accPhi] = (float) (Math.cos(ang) * inverseR);
     }
-
-
 
     int[] accumulator = new int[(phiDim +2) * (rDim +2)];
 
@@ -197,11 +199,10 @@ PVector intersection(PVector v1, PVector v2)
     float r2 = v2.x;
     float d = cos(phi2)*sin(phi1) - cos(phi1)*sin(phi2);
     float x = r2 * sin(phi1) - r1 * sin(phi2);
-    x = x/ d;
+    x = x / d;
     float y = r1 * cos(phi2) - r2 * cos(phi1);
     y = y / d;
     return new PVector(x, y);
-
 }
 
 void printIntersections(List<PVector> intersections)
@@ -250,9 +251,12 @@ void printLines(List<PVector> lines)
 }
 
 
+//----------------------------------------------------------------------------//
+//--------------------Image Processing Methods--------------------------------//
+//----------------------------------------------------------------------------//
+
 PImage binaryThreshold(PImage img, float threshold)
 {
-
     PImage result = createImage(img.width, img.height, RGB);
     for (int i = 0; i < img.width * img.height; i++) {
         if (brightness(img.pixels[i]) >= threshold) {
@@ -278,6 +282,10 @@ PImage inverseBinaryThreshold(PImage img, float threshold)
     return result;
 }
 
+/**
+ *	@brief Returns an filtered image where every pixels is grey-scaled to the original hue of this pixel
+ *	@param img Input image
+*/
 PImage hueImage(PImage img)
 {
     PImage result = createImage(img.width, img.height, RGB);
@@ -288,6 +296,13 @@ PImage hueImage(PImage img)
     return result;
 }
 
+/**
+ * @brief Returns a copy of the image containing all the pixels of color in [a,b] of saturation greater that minSaturation, and filled with black for the other pixels
+ * @param img Input image
+ * @param a Min hue
+ * @param b Max hue
+ * @param minSaturation Min saturation
+*/
 PImage selectColor(PImage img, float a, float b, float minSaturation)
 {
     PImage result = createImage(img.width, img.height, RGB);
@@ -304,13 +319,17 @@ PImage selectColor(PImage img, float a, float b, float minSaturation)
     return result;
 }
 
+/**
+ * @brief Returns a convoluted copy of the image with the given kernel, a matrix of size N*N
+ * @param img The image to convolute
+ * @param kernel The convolution kernel
+ * @param N The size of the kernel : kernel is of size N*N
+*/
 PImage convolute(PImage img, float[][] kernel, int N)
 {
-
     PImage result = createImage(img.width, img.height, RGB);
     for (int x = N/2; x < img.width - N/2; x++) {
         for (int y = N/2; y < img.height - N/2; y++) {
-
             float sum = 0;
             float weightsum = 0;
             for (int k = 0; k < N; k++) {
@@ -321,7 +340,6 @@ PImage convolute(PImage img, float[][] kernel, int N)
                     weightsum += kernel[k][l];
                 }
             }
-
             sum /= weightsum;
             result.pixels[x + y * img.width] = color(sum);
         }
@@ -329,7 +347,10 @@ PImage convolute(PImage img, float[][] kernel, int N)
     return result;
 }
 
-
+/**
+ * @brief Returns the result of the Sobel algorithm
+ * @param img Input image
+*/
 PImage sobel(PImage img)
 {
     float [][] k1 = {  {0, 1, 0},
@@ -386,17 +407,18 @@ PImage sobel(PImage img)
     return result;
 }
 
+//----------------------------------------------------------------------------//
+//-------------------------Hough Comparator-----------------------------------//
+//----------------------------------------------------------------------------//
 
 class HoughComparator implements java.util.Comparator<Integer>
 {
     int[] accumulator;
-    public HoughComparator(int[] accumulator)
-    {
+    public HoughComparator(int[] accumulator) {
         this.accumulator = accumulator;
     }
     @Override
-    public int compare(Integer l1, Integer l2)
-    {
+    public int compare(Integer l1, Integer l2) {
         if (accumulator[l1] > accumulator[l2] || (accumulator[l1] == accumulator[l2] && l1 < l2))
             return -1;
         return 1;
