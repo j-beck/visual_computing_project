@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 class QuadGraph
 {
-
-
     List<int[]> cycles = new ArrayList<int[]>();
     int[][] graph;
     List<PVector> lines;
@@ -25,11 +23,6 @@ class QuadGraph
         for (int i = 0; i < lines.size(); i++) {
             for (int j = i + 1; j < lines.size(); j++) {
                 if (intersect(lines.get(i), lines.get(j), width, height)) {
-
-                    // TODO
-                    // fill the graph using intersect() to check if two lines are
-                    // connected in the graph.
-
                     graph[idx][0] = i;
                     graph[idx][1] = j;
 
@@ -367,21 +360,40 @@ class QuadGraph
     }
 }
 
-class CWComparator implements Comparator<PVector>
+static class CWComparator implements Comparator<PVector>
 {
-
     PVector center;
 
-    public CWComparator(PVector center)
-    {
+    public CWComparator(PVector center) {
         this.center = center;
     }
 
     @Override
-    public int compare(PVector b, PVector d)
-    {
-        if (Math.atan2(b.y-center.y, b.x-center.x)<Math.atan2(d.y-center.y, d.x-center.x))
+    public int compare(PVector b, PVector d) {
+        if(Math.atan2(b.y-center.y,b.x-center.x)<Math.atan2(d.y-center.y,d.x-center.x))
             return -1;
         else return 1;
     }
+}
+
+public static List<PVector> sortCorners(List<PVector> quad)
+{
+	// Sort corners so that they are ordered clockwise
+    PVector a = quad.get(0);
+    PVector b = quad.get(2);
+    PVector center = new PVector((a.x+b.x)/2,(a.y+b.y)/2);
+    Collections.sort(quad, new CWComparator(center));
+
+	// Re-orders the corners so that the first one is the closest to the origin (0,0) of the image
+	int closest = 0;
+	double smallestDistance= Math.sqrt(quad.get(0).x * quad.get(0).x + quad.get(0).y * quad.get(0).y);
+	for (int i = 1; i < 4; i++) {
+		double distance = Math.sqrt(quad.get(i).x * quad.get(i).x + quad.get(i).y * quad.get(i).y);
+		if (distance < smallestDistance) {
+			smallestDistance = distance;
+			closest = i;
+		}
+	}
+	Collections.rotate(quad, 4-closest);
+    return quad;
 }

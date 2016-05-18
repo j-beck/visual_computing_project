@@ -16,23 +16,25 @@ float[][] gaussianKernel = {	{9, 12, 9},
 void settings()
 {
     size(640, 480);
-    //size(2400, 600);
 }
 void setup()
 {
+
     String[] cameras = Capture.list();
     if (cameras.length == 0) {
         println("There are no cameras available for capture.");
         exit();
     } else {
-        /*
+		/*
         println("Available cameras:");
         for (int i = 0; i < cameras.length; i++) {
             println(i + cameras[i]);
-        } */
+        }
+		*/
 
         cam = new Capture(this, 640, 480, 30);
-        cam.start();
+
+		cam.start();
     }
 }
 
@@ -41,13 +43,14 @@ void draw()
     float a = 90;
     float b = 140;
     float c = 70;
-    //~ img = loadImage("board1.jpg");
-
+    img = loadImage("board1.jpg");
+	/*
     if (cam.available() == true) {
         cam.read();
     }
     img = cam.get();
 
+	*/
 
     // HUE / BRIGHTNESS / SATURATION thresholding
     PImage s = img;
@@ -102,8 +105,23 @@ void draw()
         //~ min(255, random.nextInt(300)), 50));
         //~ quad(c12.x,c12.y,c23.x,c23.y,c34.x,c34.y,c41.x,c41.y);
 
-    }
 
+
+			// Prints rotations :
+		List<PVector> inters = new ArrayList<PVector>();
+		inters.add(c12);
+		inters.add(c23);
+		inters.add(c34);
+		inters.add(c41);
+		inters = sortCorners(inters);
+		TwoDThreeD tdtd = new TwoDThreeD(width, height);
+		PVector drotations = tdtd.get3DRotations(inters);
+
+		println("rx : " + drotations.x * 180 / PI + " ry : " + drotations.y * 180/ PI + " rz : " + drotations.z * 180/PI);
+
+
+
+    }
 
 }
 
