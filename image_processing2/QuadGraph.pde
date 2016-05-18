@@ -9,8 +9,7 @@ class QuadGraph
     int[][] graph;
     List<PVector> lines;
 
-    void build(List<PVector> lines, int width, int height)
-    {
+    void build(List<PVector> lines, int width, int height) {
         this.lines = lines;
 
         int n = lines.size();
@@ -32,13 +31,10 @@ class QuadGraph
         }
     }
 
-
-
     /** Returns true if polar lines 1 and 2 intersect
      * inside an area of size (width, height)
      */
-    boolean intersect(PVector line1, PVector line2, int width, int height)
-    {
+    boolean intersect(PVector line1, PVector line2, int width, int height) {
 
         double sin_t1 = Math.sin(line1.y);
         double sin_t2 = Math.sin(line2.y);
@@ -58,8 +54,7 @@ class QuadGraph
             return false;
     }
 
-    int[] getBiggestCycle()
-    {
+    int[] getBiggestCycle() {
         int[] biggest = new int[0];
         float maxArea = -1;
         for(int[] p : cycles) {
@@ -81,8 +76,7 @@ class QuadGraph
         return biggest;
     }
 
-    List<int[]> findCycles()
-    {
+    List<int[]> findCycles() {
 
         cycles.clear();
         for (int i = 0; i < graph.length; i++) {
@@ -95,13 +89,11 @@ class QuadGraph
             for (int i = 1; i < cy.length; i++) {
                 s += "," + cy[i];
             }
-            //System.out.println(s);
         }
         return cycles;
     }
 
-    void findNewCycles(int[] path)
-    {
+    void findNewCycles(int[] path) {
         int n = path[0];
         int x;
         int[] sub = new int[path.length + 1];
@@ -147,8 +139,7 @@ class QuadGraph
 
 
     //  check of both arrays have same lengths and contents
-    Boolean equals(int[] a, int[] b)
-    {
+    Boolean equals(int[] a, int[] b) {
         Boolean ret = (a[0] == b[0]) && (a.length == b.length);
 
         for (int i = 1; ret && (i < a.length); i++) {
@@ -161,8 +152,7 @@ class QuadGraph
     }
 
     //  create a path array with reversed order
-    int[] invert(int[] path)
-    {
+    int[] invert(int[] path) {
         int[] p = new int[path.length];
 
         for (int i = 0; i < path.length; i++) {
@@ -173,8 +163,7 @@ class QuadGraph
     }
 
     //  rotate cycle path such that it begins with the smallest node
-    int[] normalize(int[] path)
-    {
+    int[] normalize(int[] path) {
         int[] p = new int[path.length];
         int x = smallest(path);
         int n;
@@ -192,8 +181,7 @@ class QuadGraph
 
     //  compare path against known cycles
     //  return true, iff path is not a known cycle
-    Boolean isNew(int[] path)
-    {
+    Boolean isNew(int[] path) {
         Boolean ret = true;
 
         for (int[] p : cycles) {
@@ -207,8 +195,7 @@ class QuadGraph
     }
 
     //  return the int of the array which is the smallest
-    int smallest(int[] path)
-    {
+    int smallest(int[] path) {
         int min = path[0];
 
         for (int p : path) {
@@ -221,8 +208,7 @@ class QuadGraph
     }
 
     //  check if vertex n is contained in path
-    Boolean visited(int n, int[] path)
-    {
+    Boolean visited(int n, int[] path) {
         Boolean ret = false;
 
         for (int p : path) {
@@ -248,8 +234,7 @@ class QuadGraph
      *
      * @param c1
      */
-    boolean isConvex(PVector c1, PVector c2, PVector c3, PVector c4)
-    {
+    boolean isConvex(PVector c1, PVector c2, PVector c3, PVector c4) {
 
         PVector v21= PVector.sub(c1, c2);
         PVector v32= PVector.sub(c2, c3);
@@ -269,8 +254,7 @@ class QuadGraph
             return false;
     }
 
-    float getArea(PVector c1, PVector c2, PVector c3, PVector c4)
-    {
+    float getArea(PVector c1, PVector c2, PVector c3, PVector c4) {
         PVector v21= PVector.sub(c1, c2);
         PVector v32= PVector.sub(c2, c3);
         PVector v43= PVector.sub(c3, c4);
@@ -286,18 +270,10 @@ class QuadGraph
 
     /** Compute the area of a quad, and check it lays within a specific range
      */
-    boolean validArea(PVector c1, PVector c2, PVector c3, PVector c4, float max_area, float min_area)
-    {
-
-
-
+    boolean validArea(PVector c1, PVector c2, PVector c3, PVector c4, float max_area, float min_area) {
         float area = getArea(c1,c2,c3,c4);
 
-        //System.out.println(area);
-
         boolean valid = (area < max_area && area > min_area);
-
-        //if (!valid) System.out.println("Area out of range");
 
         return valid;
     }
@@ -305,9 +281,7 @@ class QuadGraph
     /** Compute the (cosine) of the four angles of the quad, and check they are all large enough
      * (the quad representing our board should be close to a rectangle)
      */
-    boolean nonFlatQuad(PVector c1, PVector c2, PVector c3, PVector c4)
-    {
-
+    boolean nonFlatQuad(PVector c1, PVector c2, PVector c3, PVector c4) {
         // cos(70deg) ~= 0.3
         float min_cos = 0.5f;
 
@@ -324,16 +298,13 @@ class QuadGraph
         if (cos1 < min_cos && cos2 < min_cos && cos3 < min_cos && cos4 < min_cos)
             return true;
         else {
-            //System.out.println("Flat quad");
             return false;
         }
     }
 
-
-
+    /*
     List<PVector> sortCorners(List<PVector> quad)
     {
-
         // 1 - Sort corners so that they are ordered clockwise
         PVector a = quad.get(0);
         PVector b = quad.get(2);
@@ -341,8 +312,6 @@ class QuadGraph
         PVector center = new PVector((a.x+b.x)/2, (a.y+b.y)/2);
 
         Collections.sort(quad, new CWComparator(center));
-
-
 
         // 2 - Sort by upper left most corner
         PVector origin = new PVector(0, 0);
@@ -358,42 +327,5 @@ class QuadGraph
 
         return quad;
     }
-}
-
-static class CWComparator implements Comparator<PVector>
-{
-    PVector center;
-
-    public CWComparator(PVector center) {
-        this.center = center;
-    }
-
-    @Override
-    public int compare(PVector b, PVector d) {
-        if(Math.atan2(b.y-center.y,b.x-center.x)<Math.atan2(d.y-center.y,d.x-center.x))
-            return -1;
-        else return 1;
-    }
-}
-
-public static List<PVector> sortCorners(List<PVector> quad)
-{
-	// Sort corners so that they are ordered clockwise
-    PVector a = quad.get(0);
-    PVector b = quad.get(2);
-    PVector center = new PVector((a.x+b.x)/2,(a.y+b.y)/2);
-    Collections.sort(quad, new CWComparator(center));
-
-	// Re-orders the corners so that the first one is the closest to the origin (0,0) of the image
-	int closest = 0;
-	double smallestDistance= Math.sqrt(quad.get(0).x * quad.get(0).x + quad.get(0).y * quad.get(0).y);
-	for (int i = 1; i < 4; i++) {
-		double distance = Math.sqrt(quad.get(i).x * quad.get(i).x + quad.get(i).y * quad.get(i).y);
-		if (distance < smallestDistance) {
-			smallestDistance = distance;
-			closest = i;
-		}
-	}
-	Collections.rotate(quad, 4-closest);
-    return quad;
+    */
 }
