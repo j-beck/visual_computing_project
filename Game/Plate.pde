@@ -84,6 +84,13 @@ class Plate {
 		this.zAngle = max ( min(zAngle, maxAngle), -maxAngle);
 	}
 
+	public void changeAngle(float xAngle, float zAngle) {
+		this.xAngle = xAngle;
+		this.zAngle = zAngle;
+		this.xAngle = max ( min(xAngle, maxAngle), -maxAngle);
+		this.zAngle = max ( min(zAngle, maxAngle), -maxAngle);
+	}
+
 	/**
 	*	Change the coordinates relatively to the plate
 	*/

@@ -20,6 +20,10 @@ class Parameters {
 	private	int		plate_depth;
 	private	int		ball_radius;
 
+	private List<Button>	resButtons;
+
+	private GameMode defaultMode;
+
 	public Parameters() {
 		window_width		=	1080;
 		window_height		=	720;
@@ -33,6 +37,23 @@ class Parameters {
 		plate_width			=	(int)(window_width / 50);
 		plate_depth			=	plate_height;
 		ball_radius			=	(int)(window_width / 80);
+
+		defaultMode = GameMode.PLAYING_CAM;
+
+		int buttonWidth = window_width / 5;
+		int buttonHeight = window_height / 25;
+		int buttonX = (int)((window_width - buttonWidth)/2);
+		int buttonY = window_height / 10;
+		int offset = window_height / 100;
+		int textSize = (int)min(2 * buttonHeight / 5, 2 * buttonWidth / 5);
+
+		resButtons = new ArrayList<Button>(Arrays.asList(
+			new resButton("1920 x 1080", buttonX, buttonY + 0 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1920, 1080),
+			new resButton("1680 x 1050", buttonX, buttonY + 1 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1680, 1050),
+			new resButton("1600 x 900", buttonX, buttonY + 2 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1600, 900),
+			new resButton("1440 x 900", buttonX, buttonY + 3 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1440, 900),
+			new resButton("1280 x 720", buttonX, buttonY + 4 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1280, 720),
+			new resButton("1080 x 720", buttonX, buttonY + 5 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1080, 720)));
 	}
 
 	public Parameters(Parameters newP) {
@@ -48,6 +69,24 @@ class Parameters {
 		this.plate_width = newP.getPlateWidth();
 		this.plate_depth = newP.getPlateDepth();
 		this.ball_radius = newP.getBallRadius();
+
+		this.defaultMode = GameMode.PLAYING_MOUSE;
+
+		int buttonWidth = window_width / 5;
+		int buttonHeight = window_height / 25;
+		int buttonX = (int)((window_width - buttonWidth)/2);
+		int buttonY = window_height / 10;
+		int offset = window_height / 100;
+		int textSize = (int)min(2 * buttonHeight / 5, 2 * buttonWidth / 5);
+
+		resButtons = new ArrayList<Button>(Arrays.asList(
+			new resButton("1920 x 1080", buttonX, buttonY + 0 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1920, 1080),
+			new resButton("1680 x 1050", buttonX, buttonY + 1 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1680, 1050),
+			new resButton("1600 x 900", buttonX, buttonY + 2 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1600, 900),
+			new resButton("1440 x 900", buttonX, buttonY + 3 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1440, 900),
+			new resButton("1280 x 720", buttonX, buttonY + 4 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1280, 720),
+			new resButton("1080 x 720", buttonX, buttonY + 5 * (buttonHeight + offset), buttonWidth, buttonHeight, textSize, 1080, 720)));
+
 	}
 
 
@@ -106,5 +145,11 @@ class Parameters {
 	public int getBallRadius() {
 		return ball_radius;
 	}
+	public GameMode getMode() {
+		return this.defaultMode;
+	}
 
+	public List<Button> getResButtons() {
+		return resButtons;
+	}
 }

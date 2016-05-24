@@ -1,7 +1,3 @@
-import java.util.List;
-import java.util.ArrayList;
-
-
 /**
 *	The game itself
 *
@@ -12,10 +8,15 @@ import java.util.ArrayList;
 *	@version 2016-05-04
 */
 
+import java.util.List;
+import java.util.ArrayList;
+import processing.video.*;
+
+
 
 // Game Settings
 
-Parameters P = new Parameters();
+Parameters P;
 Menu M;
 
 // Game Attributes
@@ -25,16 +26,21 @@ List<CylinderOnPlate> 	cylinders;
 GameMode 				mode;
 Surfaces				surfaces;
 
-
 float centerX, centerY, centerZ;
 
+
+ImageProcessing imgprc;
+
+
 void settings() {
-  size(P.getWindowWidth(), P.getWindowHeight(), P3D);
+	P = new Parameters();
+	size(P.getWindowWidth(), P.getWindowHeight(), P3D);
 }
 
 void setup() {
-	M = new Menu(P);
+	String[] cameras = Capture.list();
 
+	M = new Menu(P);
 
 	frameRate(P.getFramerate());
 	surface.setResizable(true);
@@ -42,18 +48,30 @@ void setup() {
 	centerY = 2.8*P.getWindowHeight()/5.0;
 	centerZ = 0.5 * P.getWindowHeight();
 
-
 	plate = new Plate(centerX, centerY, centerZ,
 						P.getPlateHeight(), P.getPlateWidth(), P.getPlateDepth());
 	ball = new BallOnPlate(0, 0, P.getBallRadius(), plate);
-	mode = GameMode.PLAYING;
+	mode = P.getMode();
 
 	cylinders = new ArrayList<CylinderOnPlate>();
 
 	surfaces = new Surfaces(P, plate, ball, cylinders);
 
-}
+	if (P.getMode() == GameMode.PLAYING_CAM) {
+	    if (cameras.length == 0) {
+	        println("There are no cameras available for capture.");
+	        exit();
+	    } else {
+	        Capture cam = new Capture(this, 640, 480, 30);
+	    	cam.start();
+			imgprc = new ImageProcessing(cam);
+			//String []args = {"Image processing window"};
+			//PApplet.runSketch(args, imgprc);
 
+	    }
+	}
+
+}
 
 void changeWindowSize(int ww, int wh) {
 	P.setWindowSize(ww, wh);
@@ -73,13 +91,12 @@ void resetParameters(Parameters P) {
 	plate = new Plate(centerX, centerY, centerZ,
 						P.getPlateHeight(), P.getPlateWidth(), P.getPlateDepth());
 	ball = new BallOnPlate(0, 0, P.getBallRadius(), plate);
-	mode = GameMode.PLAYING;
+	mode = P.getMode();
 
 	cylinders = new ArrayList<CylinderOnPlate>();
 
 	surfaces = new Surfaces(P, plate, ball, cylinders);
 	surface.setSize(P.getWindowWidth(), P.getWindowHeight());
-
 }
 
 
@@ -89,7 +106,7 @@ void draw() {
 	ambientLight(200, 200, 200);
 
 	switch(mode) {
-		case PLAYING:
+		case PLAYING_MOUSE:
 			camera(centerX, centerY - 10*P.getPlateWidth(), centerZ + 1*P.getWindowHeight(), centerX, centerY, 1.5 * centerZ, 0, 1, 0);
 			plate.draw();
 			ball.draw(cylinders);
@@ -98,7 +115,18 @@ void draw() {
 			}
 			camera();
 			surfaces.draw();
-
+			break;
+		case PLAYING_CAM:
+			this.camUpdate();
+			camera(centerX, centerY - 10*P.getPlateWidth(), centerZ + 1*P.getWindowHeight(), centerX, centerY, 1.5 * centerZ, 0, 1, 0);
+			plate.draw();
+			ball.draw(cylinders);
+			for (CylinderOnPlate c : cylinders) {
+				c.draw();
+			}
+			camera();
+			surfaces.draw();
+			//imgprc.draw();
 			break;
 		case EDITING:
 				//camera();
@@ -118,27 +146,35 @@ void draw() {
 
 }
 
+void camUpdate() {
+	if(this.mode == GameMode.PLAYING_CAM) {
+		PVector angles = this.imgprc.process();
+		if (angles != null) {
+			plate.changeAngle(angles.x, angles.y);
+		}
+	}
+}
 
 void mouseDragged() {
 	switch(mode) {
-		case PLAYING:
-		if (mouseY < P.getWindowHeight() - surfaces.getHeight()) {
-			plate.updateAngle(-(mouseY - pmouseY)*PI/pow(10,4),
-								(mouseX - pmouseX)*PI/pow(10,4));
-		}
+		case PLAYING_MOUSE:
+			if (mouseY < P.getWindowHeight() - surfaces.getHeight()) {
+				plate.updateAngle(-(mouseY - pmouseY)*PI/pow(10,4),
+									(mouseX - pmouseX)*PI/pow(10,4));
+			}
 			break;
 		case EDITING:
 			break;
 		case SETTINGS:
 			break;
 		default:
-
+			break;
 	}
 }
 
 void mouseWheel(MouseEvent event) {
 	switch(mode) {
-		case PLAYING:
+		case PLAYING_MOUSE:
 			float e = event.getCount();
 			plate.updateSensitivity(e);
 			break;
@@ -160,16 +196,16 @@ void keyPressed() {
 }
 void keyReleased() {
 	if (keyCode == SHIFT) {
-		mode = GameMode.PLAYING;
+		mode = P.getMode();
 	}
 
 }
 void keyTyped() {
 	if (key == 'm') {
-		if (mode == GameMode.PLAYING) {
+		if (mode == GameMode.PLAYING_MOUSE || mode == GameMode.PLAYING_CAM) {
 			mode = GameMode.SETTINGS;
 		} else if (mode == GameMode.SETTINGS) {
-			mode = GameMode.PLAYING;
+			mode = P.getMode();
 		}
 	}
 }
