@@ -283,7 +283,7 @@ class QuadGraph
      */
     boolean nonFlatQuad(PVector c1, PVector c2, PVector c3, PVector c4) {
         // cos(70deg) ~= 0.3
-        float min_cos = 0.5f;
+        float min_cos = 0.7f;
 
         PVector v21= PVector.sub(c1, c2);
         PVector v32= PVector.sub(c2, c3);

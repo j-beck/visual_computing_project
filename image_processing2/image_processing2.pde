@@ -14,7 +14,7 @@ void settings()
 }
 void setup()
 {
-/*
+
     String[] cameras = Capture.list();
 
     if (cameras.length == 0) {
@@ -31,25 +31,24 @@ void setup()
         cam = new Capture(this, 640, 480, 30);
     	cam.start();
     }
-	*/
 }
 
 void draw()
 {
     float a = 90;
-    float b = 140;
+    float b = 130;
     float c = 70;
-    img = loadImage("board2.jpg");
+    //img = loadImage("board1.jpg");
 
-	/*
+
     if (cam.available() == true) {
         cam.read();
     }
     img = cam.get();
-	*/
 
 
-    image(img, 0, 0); // background
+
+    //image(img, 0, 0); // background
     PImage s = img;
 
     // HUE / BRIGHTNESS / SATURATION thresholding
@@ -57,10 +56,11 @@ void draw()
     // BLURRING
     s = gaussianBlur(s);
     // INTENSITY
-    s = binaryThreshold(s, 30);
+    s = binaryThreshold(s, 85);
 
     // SOBEL
     s = sobel(s);
+	image(s, 0, 0);
 
     // HOUGH
     ArrayList<PVector> hLines = hough(s, 6, 100);
@@ -92,7 +92,11 @@ void draw()
         inters.add(c23);
         inters.add(c34);
         inters.add(c41);
-        //inters = sortCorners(inters);
+
+        inters = sortCorners(inters);
+		for (PVector VV : inters) {
+			println(VV.x + " " + VV.y + " " + VV.z );
+		}
         TwoDThreeD tdtd = new TwoDThreeD(img.width, img.height);
         PVector drotations = tdtd.get3DRotations(inters);
 		println("rx : " + (int)Math.toDegrees(drotations.x) + " ry : " + (int)Math.toDegrees(drotations.y) + " rz : " + (int)Math.toDegrees(drotations.z));
