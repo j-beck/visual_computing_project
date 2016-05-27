@@ -203,7 +203,7 @@ class Surfaces
         scoreboard.textSize(textsize);
         float Woffset = 0.025 * SBWIDTH; // We offset the text so it doesnt touch the rectangle
         // TODO : print the floats with less precision
-        String s = "Total Score : \n" + ball.getTotalScore() + "\n" + "Velocity : \n" + ball.getNVelocity() + "\n" + "Last Score : \n" + ball.getLastScore(); // exactly 6 lines
+        String s = "Total Score : \n" + (int)ball.getTotalScore() + "\n" + "Velocity : \n" + ball.getNVelocity() + "\n" + "Last Score : \n" + (int)ball.getLastScore(); // exactly 6 lines
         scoreboard.text(s, 0.05 * SBWIDTH + Woffset, 0.15 * PGHEIGHT, 0); // dont understand why with text.y pos = 0.05*PGHEIGHT it doesnt work
         scoreboard.endDraw();
     }

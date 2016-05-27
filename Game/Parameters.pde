@@ -27,7 +27,7 @@ class Parameters {
 	public Parameters() {
 		window_width		=	1080;
 		window_height		=	720;
-		framerate			=	100;
+		framerate			=	30;
 
 		cylinder_radius		=	window_width / 50;
 		cylinder_height		=	window_width / 40;

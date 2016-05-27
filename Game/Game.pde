@@ -104,7 +104,7 @@ void draw() {
 	background(150);
 	directionalLight(50, 50, 60, 0, 400, 0);
 	ambientLight(200, 200, 200);
-
+	char count = 0;
 	switch(mode) {
 		case PLAYING_MOUSE:
 			camera(centerX, centerY - 10*P.getPlateWidth(), centerZ + 1*P.getWindowHeight(), centerX, centerY, 1.5 * centerZ, 0, 1, 0);
@@ -117,7 +117,11 @@ void draw() {
 			surfaces.draw();
 			break;
 		case PLAYING_CAM:
-			this.camUpdate();
+			
+			if (count % 10 == 0) {
+				this.camUpdate();
+			}
+			count ++;
 			camera(centerX, centerY - 10*P.getPlateWidth(), centerZ + 1*P.getWindowHeight(), centerX, centerY, 1.5 * centerZ, 0, 1, 0);
 			plate.draw();
 			ball.draw(cylinders);
@@ -126,8 +130,8 @@ void draw() {
 			}
 			camera();
 			surfaces.draw();
-			//imgprc.draw();
 			break;
+
 		case EDITING:
 				//camera();
 				//camera(centerX, centerY, centerZ + 0*P.getWindowHeight(), centerX, centerY, centerZ, 0, 1, 0);

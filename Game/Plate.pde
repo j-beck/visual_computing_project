@@ -85,10 +85,12 @@ class Plate {
 	}
 
 	public void changeAngle(float xAngle, float zAngle) {
-		this.xAngle = xAngle;
-		this.zAngle = zAngle;
-		this.xAngle = max ( min(xAngle, maxAngle), -maxAngle);
-		this.zAngle = max ( min(zAngle, maxAngle), -maxAngle);
+
+		if (xAngle < maxAngle && xAngle > -maxAngle && zAngle < maxAngle && zAngle > -maxAngle) {
+			this.xAngle = xAngle;
+			this.zAngle = zAngle;
+		}
+
 	}
 
 	/**
