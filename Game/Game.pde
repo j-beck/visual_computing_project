@@ -5,7 +5,7 @@
 *	@author Thomas Avon
 *	@author Pierre Thévenet
 *
-*	@version 2016-05-04
+*	@version 2016-06-16
 */
 
 import java.util.List;
@@ -30,6 +30,7 @@ float centerX, centerY, centerZ;
 
 
 ImageProcessing imgprc;
+ImageProcessing2 imgprc2;
 
 
 void settings() {
@@ -63,13 +64,17 @@ void setup() {
 	        exit();
 	    } else {
 	        Capture cam = new Capture(this, 640, 480, 30);
-	    	cam.start();
+	    	  cam.start();
 			imgprc = new ImageProcessing(cam);
 			//String []args = {"Image processing window"};
 			//PApplet.runSketch(args, imgprc);
 
 	    }
-	}
+	} else if (P.getMode() == GameMode.TEST_VIDEO) {
+        Movie cam = new Movie(this, "D:\\pierrethevenet\\Desktop\\visual_computing_project\\Game\\testvideo.mp4");
+        cam.loop();
+        imgprc2 = new ImageProcessing2(cam);
+  }
 
 }
 
@@ -117,7 +122,6 @@ void draw() {
 			surfaces.draw();
 			break;
 		case PLAYING_CAM:
-			
 			if (count % 10 == 0) {
 				this.camUpdate();
 			}
@@ -131,6 +135,18 @@ void draw() {
 			camera();
 			surfaces.draw();
 			break;
+
+    case TEST_VIDEO:
+      this.camUpdate2();
+      camera(centerX, centerY - 10*P.getPlateWidth(), centerZ + 1*P.getWindowHeight(), centerX, centerY, 1.5 * centerZ, 0, 1, 0);
+      plate.draw();
+      ball.draw(cylinders);
+      for (CylinderOnPlate c : cylinders) {
+        c.draw();
+      }
+      camera();
+      surfaces.draw();
+      break;
 
 		case EDITING:
 				//camera();
@@ -159,6 +175,17 @@ void camUpdate() {
 	}
 }
 
+void camUpdate2() {
+ if(this.mode == GameMode.TEST_VIDEO) {
+    PVector angles = this.imgprc2.process();
+    if (angles != null) {
+      plate.changeAngle(angles.x, angles.y);
+    }
+ }
+  
+}
+
+
 void mouseDragged() {
 	switch(mode) {
 		case PLAYING_MOUSE:
@@ -166,10 +193,6 @@ void mouseDragged() {
 				plate.updateAngle(-(mouseY - pmouseY)*PI/pow(10,4),
 									(mouseX - pmouseX)*PI/pow(10,4));
 			}
-			break;
-		case EDITING:
-			break;
-		case SETTINGS:
 			break;
 		default:
 			break;
@@ -182,12 +205,17 @@ void mouseWheel(MouseEvent event) {
 			float e = event.getCount();
 			plate.updateSensitivity(e);
 			break;
+    case PLAYING_CAM:
+      plate.updateSensitivity(event.getCount());
+      break;
+    case TEST_VIDEO:
+      plate.updateSensitivity(event.getCount());
+      break;
 		case EDITING:
 			break;
 		case SETTINGS:
 			break;
 		default:
-
 	}
 }
 

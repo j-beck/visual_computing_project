@@ -38,7 +38,8 @@ class Parameters {
 		plate_depth			=	plate_height;
 		ball_radius			=	(int)(window_width / 80);
 
-		defaultMode = GameMode.PLAYING_CAM;
+		//defaultMode = GameMode.PLAYING_CAM;
+		defaultMode = GameMode.TEST_VIDEO;
 
 		int buttonWidth = window_width / 5;
 		int buttonHeight = window_height / 25;
