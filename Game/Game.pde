@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import processing.video.*;
 
 
+// MOVIE
+
+Movie cam;
 
 // Game Settings
 
@@ -39,6 +42,10 @@ void settings() {
 }
 
 void setup() {
+  
+   cam = new Movie(this, "D:\\pierrethevenet\\Desktop\\visual_computing_project\\Game\\testvideo.mp4");
+   cam.loop();
+
 	String[] cameras = Capture.list();
 
 	M = new Menu(P);
@@ -73,9 +80,13 @@ void setup() {
 	} else if (P.getMode() == GameMode.TEST_VIDEO) {
         Movie cam = new Movie(this, "D:\\pierrethevenet\\Desktop\\visual_computing_project\\Game\\testvideo.mp4");
         cam.loop();
-        imgprc2 = new ImageProcessing2(cam);
+        imgprc2 = new ImageProcessing2();
   }
 
+}
+
+void movieEvent(Movie m) {
+  m.read();
 }
 
 void changeWindowSize(int ww, int wh) {
@@ -146,6 +157,11 @@ void draw() {
       }
       camera();
       surfaces.draw();
+      
+      PImage cp = cam.copy();
+      cp.resize(64 * 5, 48 * 5);
+      image(cp, width - 64*5, 0);
+ 
       break;
 
 		case EDITING:

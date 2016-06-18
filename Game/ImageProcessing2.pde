@@ -16,7 +16,7 @@ import java.util.Arrays;
 import processing.video.*;
 
 class ImageProcessing2 extends PApplet {
-  private Movie cam;
+  //private Movie cam;
   private PImage img;
   private PImage sobelI;
   private TwoDThreeD tdtd;
@@ -26,16 +26,16 @@ class ImageProcessing2 extends PApplet {
   float c = 100; // saturation min
 
 
-  public ImageProcessing2(Movie cam) {
-    this.cam = cam;
+  public ImageProcessing2() {
+    //this.cam = cam;
   }
 
   void settings() {
       size(640, 480);
   }
   void setup() {
-      cam = new Movie(this, "testvideo.mp4");
-      cam.loop();
+      //cam = new Movie(this, "testvideo.mp4");
+      //cam.loop();
   }
 
   PVector process() {
@@ -85,9 +85,9 @@ class ImageProcessing2 extends PApplet {
   void draw() {
     // Hue & Saturation thresholding constants
 
-    if (cam.available() == true) {
+    /*if (cam.available() == true) {
       cam.read();
-    }
+    }*/
     img = cam.get();
     image(img, 0, 0);
 
